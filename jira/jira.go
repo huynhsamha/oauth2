@@ -19,7 +19,7 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/oauth2"
+	"github.com/huynhsamha/oauth2"
 )
 
 // ClaimSet contains information about the JWT signature according

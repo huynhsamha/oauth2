@@ -109,6 +109,7 @@ const (
 	AuthStyleUnknown  AuthStyle = 0
 	AuthStyleInParams AuthStyle = 1
 	AuthStyleInHeader AuthStyle = 2
+	AuthStyleInQuery  AuthStyle = 3
 )
 
 // authStyleCache is the set of tokenURLs we've successfully used via
@@ -157,6 +158,23 @@ func setAuthStyle(tokenURL string, v AuthStyle) {
 // the POST body (along with any values in v); false means to send it
 // in the Authorization header.
 func newTokenRequest(tokenURL, clientID, clientSecret string, v url.Values, authStyle AuthStyle, paramsConfig ParamsConf) (*http.Request, error) {
+	// HTTP GET
+	if authStyle == AuthStyleInQuery {
+		req, err := http.NewRequest("GET", tokenURL, nil)
+		if err != nil {
+			return nil, err
+		}
+		q := cloneURLValues(v)
+		if clientID != "" {
+			q.Add(paramsConfig.ClientID, clientID)
+		}
+		if clientSecret != "" {
+			q.Add(paramsConfig.ClientSecret, clientSecret)
+		}
+		req.URL.RawQuery = q.Encode()
+		return req, nil
+	}
+	// HTTP POST
 	if authStyle == AuthStyleInParams {
 		v = cloneURLValues(v)
 		if clientID != "" {
@@ -215,6 +233,13 @@ func RetrieveToken(ctx context.Context, clientID, clientSecret, tokenURL string,
 		// they went, but maintaining it didn't scale & got annoying.
 		// So just try both ways.
 		authStyle = AuthStyleInParams // the second way we'll try
+		req, _ = newTokenRequest(tokenURL, clientID, clientSecret, v, authStyle, paramsConfig)
+		token, err = doTokenRoundTrip(ctx, req)
+	}
+	if err != nil && needsAuthStyleProbe {
+		// If we get an error, assume the server wants the
+		// clientID & clientSecret in a different form.
+		authStyle = AuthStyleInQuery // the third way we'll try
 		req, _ = newTokenRequest(tokenURL, clientID, clientSecret, v, authStyle, paramsConfig)
 		token, err = doTokenRoundTrip(ctx, req)
 	}

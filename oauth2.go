@@ -99,6 +99,10 @@ const (
 	// using HTTP Basic Authorization. This is an optional style
 	// described in the OAuth2 RFC 6749 section 2.3.1.
 	AuthStyleInHeader AuthStyle = 2
+
+	// AuthStyleInQuery sends client_id and client_passwor in HTTP GET
+	// Examples /access_token?client_id={1}&client_secret={2}&code={3}
+	AuthStyleInQuery AuthStyle = 3
 )
 
 var (

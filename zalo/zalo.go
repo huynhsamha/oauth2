@@ -7,6 +7,7 @@ import (
 
 // Endpoint is Zalo's OAuth 2.0 endpoint.
 var Endpoint = oauth2.Endpoint{
-	AuthURL:  "https://oauth.zaloapp.com/v3/auth",
-	TokenURL: "https://oauth.zaloapp.com/v3/access_token",
+	AuthURL:   "https://oauth.zaloapp.com/v3/auth",
+	TokenURL:  "https://oauth.zaloapp.com/v3/access_token",
+	AuthStyle: oauth2.AuthStyleInQuery,
 }

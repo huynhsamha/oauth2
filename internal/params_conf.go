@@ -10,6 +10,12 @@ type ParamsConf struct {
 
 	// ClientSecret name of param client secret, default is `client_secret`
 	ClientSecret string
+
+	// SecretKey name of header secret key, default is `secret_key`
+	SecretKey string
+
+	// SetSecretKey should be set secret key in header
+	SetSecretKey bool
 }
 
 // InitializeIfEmpty initialize params config if empty
@@ -22,5 +28,10 @@ func (p *ParamsConf) InitializeIfEmpty() {
 	}
 	if p.ClientSecret == "" {
 		p.ClientSecret = "client_secret"
+	}
+
+	p.SetSecretKey = false
+	if p.SecretKey == "" {
+		p.SecretKey = "secret_key"
 	}
 }

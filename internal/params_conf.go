@@ -22,6 +22,7 @@ type ParamsConf struct {
 // default:
 //    + ClientID     : `client_id`
 //    + ClientSecret : `client_secret`
+//    + SecretKey    : `secret_key`
 func (p *ParamsConf) InitializeIfEmpty() {
 	if p.ClientID == "" {
 		p.ClientID = "client_id"
@@ -29,8 +30,6 @@ func (p *ParamsConf) InitializeIfEmpty() {
 	if p.ClientSecret == "" {
 		p.ClientSecret = "client_secret"
 	}
-
-	p.SetSecretKey = false
 	if p.SecretKey == "" {
 		p.SecretKey = "secret_key"
 	}
